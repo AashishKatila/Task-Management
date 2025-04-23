@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use("/api", taskRoutes); // All task routes will be prefixed with /api
+app.use("/api", taskRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

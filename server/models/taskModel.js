@@ -1,21 +1,54 @@
 const db = require("../config/db");
 
-exports.getAllTasks = (callback) => {
-  db.query("SELECT * FROM task_management", callback);
+// Ensure you're using promise-based query
+exports.getAllTasks = async () => {
+  try {
+    const [results] = await db.promise().query("SELECT * FROM task_management");
+    return results;
+  } catch (err) {
+    throw new Error('Error fetching tasks: ' + err);
+  }
 };
 
-exports.getTaskById = (id, callback) => {
-  db.query("SELECT * FROM task_management WHERE id = ?", [id], callback);
+exports.getTaskById = async (id) => {
+  try {
+    const [results] = await db.promise().query("SELECT * FROM task_management WHERE id = ?", [id]);
+    return results;
+  } catch (err) {
+    throw new Error('Error fetching task: ' + err);
+  }
 };
 
-exports.postTask = (data,callback) => {
-  db.query("INSERT INTO task_management (title,description,status) VALUES (?,?,?)",[data.title,data.description,data.status],callback);
-}
+exports.postTask = async (data) => {
+  try {
+    const [results] = await db.promise().query(
+      "INSERT INTO task_management (title, description, status) VALUES (?, ?, ?)",
+      [data.title, data.description, data.status]
+    );
+    return results;
+  } catch (err) {
+    throw new Error('Error inserting task: ' + err);
+  }
+};
 
-exports.updateTask = (id,data,callback) => {
-  db.query("UPDATE task_management SET title = ?, description = ?, status = ? WHERE id = ?",[data.title,data.description,data.status,id],callback);
-}
+exports.updateTaskStatus = (id, status, callback) => {
+  const allowedStatuses = ["todo", "in_progress", "completed"];
+  if (!allowedStatuses.includes(status)) {
+    return callback(new Error("Invalid status"));
+  }
 
-exports.deleteTask = (id,callback) => {
-  db.query("DELETE FROM task_management WHERE id = ?",[id],callback);
-}
+  db.query(
+    "UPDATE task_management SET status = ? WHERE id = ?",
+    [status, id],
+    callback
+  );
+};
+
+exports.deleteTask = async (id) => {
+  try {
+    const [results] = await db.promise().query("DELETE FROM task_management WHERE id = ?", [id]);
+    return results;
+  } catch (err) {
+    throw new Error('Error deleting task: ' + err);
+  }
+};
