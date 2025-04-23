@@ -17,9 +17,12 @@ export default function DraggableItem({ id, task }: any) {
   const handleDelete = async (id: string) => {
     console.log('Delete task', id);
     try {
-      const response = await fetch(`http://localhost:5000/tasks/${id}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASEURL}/api/tasks/${id}`,
+        {
+          method: 'DELETE',
+        }
+      );
       if (!response.ok) {
         throw new Error('Failed to delete task');
       }

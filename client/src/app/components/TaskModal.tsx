@@ -39,17 +39,20 @@ TaskModalProps) {
 
     try {
       // Using JSONPlaceholder as a dummy API
-      const response = await fetch('http://localhost:5000/tasks', {
-        method: 'POST',
-        body: JSON.stringify({
-          title: formData.title,
-          description: formData.description,
-          status: formData.status,
-        }),
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-        },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASEURL}/api/tasks`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            title: formData.title,
+            description: formData.description,
+            status: formData.status,
+          }),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+          },
+        }
+      );
 
       console.log('Response = ', response);
 

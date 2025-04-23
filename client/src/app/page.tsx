@@ -39,7 +39,9 @@ export default function Home() {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch('http://localhost:5000/tasks'); // Adjust your API endpoint
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASEURL}/api/tasks`
+        ); // Adjust your API endpoint
         const tasks: Task[] = await response.json();
         // console.log('REspinse', response);
         // console.log('Tasks from API', tasks);
@@ -143,20 +145,25 @@ export default function Home() {
       });
 
       // Update task status in the backend
-      await fetch(`http://localhost:5000/tasks/${movedTask.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          taskId: movedTask.id,
-          status: newStatus,
-        }),
-      });
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BASEURL}/api/tasks/${movedTask.id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            taskId: movedTask.id,
+            status: newStatus,
+          }),
+        }
+      );
     } catch (error) {
       console.error('Error updating task:', error);
       // Re-fetch data to revert any changes
-      const response = await fetch(`http://localhost:5000/tasks`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASEURL}/api/tasks`
+      );
       const tasks: Task[] = await response.json();
       setColumns({
         todo: {
